@@ -130,3 +130,5 @@ dmypy.json
 
 # Credentials folde
 *.json
+
+.mypy_cache
