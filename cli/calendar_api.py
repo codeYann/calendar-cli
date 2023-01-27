@@ -14,8 +14,8 @@ SCOPES: List[str] = [
 
 class AgendaBase:
     def __init__(self, scopes: List[str]) -> None:
-        dirname = os.path.dirname(__file__)
-        file_name = os.path.join(dirname, "../token.json")
+        dirname: str = os.path.dirname(__file__)
+        file_name: str = os.path.join(dirname, "../token.json")
         self.cred: Credentials = Credentials.from_authorized_user_file(
             file_name, scopes
         )
