@@ -1,36 +1,19 @@
-from typing import Any, List, Dict
-
-# from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from .auth import BaseAuth, SCOPES
+from typing import Dict
 from googleapiclient.discovery import build
-import os.path
-
-SCOPES: List[str] = [
-    "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/calendar.events",
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/calendar.settings.readonly",
-]
 
 
-class EventAPI:
-    def __init__(self) -> None:
-        dir_name: str = os.path.dirname(__file__)
-        file_name: str = os.path.join(dir_name, "../../credentials.json")
-        flow: InstalledAppFlow = InstalledAppFlow.from_client_secrets_file(
-            file_name, scopes=SCOPES
-        )
-        flow.run_local_server()
-        self.credentials = flow.credentials
+class EventAPI(BaseAuth):
+    def __init__(self, calendar_id: str) -> None:
+        super().__init__(scopes=SCOPES)
+        self.calendar_id = calendar_id
 
     def get_event(self, event_id: str) -> Dict[str, str]:
         wrapper: Dict[str, str]
         with build("calendar", "v3", credentials=self.credentials) as service:
             event = (
                 service.events()
-                .get(
-                    calendarId="ccyan05@alu.ufc.br", eventId=event_id, singleEvents=True
-                )
+                .get(calendarId=self.calendar_id, eventId=event_id)
                 .execute()
             )
             wrapper = event
@@ -42,10 +25,7 @@ class EventAPI:
             while True:
                 events = (
                     service.events()
-                    .list(
-                        calendarId="ccyan05@alu.ufc.br",
-                        pageToken=page_token
-                    )
+                    .list(calendarId=self.calendar_id, pageToken=page_token)
                     .execute()
                 )
                 for event in events["items"]:
@@ -53,9 +33,11 @@ class EventAPI:
                 break
 
 
-api = EventAPI()
-response = api.get_event("6gvbn1l99je9o94ptrp5o333ea")
+api = EventAPI(
+    "e20faad03495c77a8b983f515ee3084c11fa27ffce9255f39d7799478c6596fa@group.calendar.google.com"
+)
+response = api.get_event(
+    "7i8gm3u38n8fg4ktdmlua6n0vm e20faad03495c77a8b983f515ee3084c11fa27ffce9255f39d7799478c6596fa@g"
+)
 
 print(response, type(response))
-
-api.list_events()
