@@ -31,13 +31,3 @@ class EventAPI(BaseAuth):
                 for event in events["items"]:
                     print(event["description"])
                 break
-
-
-api = EventAPI(
-    "e20faad03495c77a8b983f515ee3084c11fa27ffce9255f39d7799478c6596fa@group.calendar.google.com"
-)
-response = api.get_event(
-    "7i8gm3u38n8fg4ktdmlua6n0vm e20faad03495c77a8b983f515ee3084c11fa27ffce9255f39d7799478c6596fa@g"
-)
-
-print(response, type(response))
